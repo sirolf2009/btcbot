@@ -42,7 +42,7 @@ class CommandSentiment extends Command {
 			if(sell > buy) {
 				return Optional.of('''BFXData: sell «format.format(sell/(total)*100)»%''')
 			}
-			return Optional.of('''BFXData: buy «format.format(buy/(total)*100)»%''')
+			return Optional.of('''BFXData.com: buy «format.format(buy/(total)*100)»%''')
 		} catch(MalformedURLException e) {
 			return Optional.empty()
 		}
