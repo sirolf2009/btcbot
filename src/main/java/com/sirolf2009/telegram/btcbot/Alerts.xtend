@@ -105,20 +105,27 @@ class Alerts implements Runnable {
 	}
 
 	def load(File file) {
-		alerts.clear()
-		alerts += Files.lines(file.toPath).map [
-			val cols = split(",")
-			val symbol = cols.get(0)
-			val diff = Double.parseDouble(cols.get(1))
-			val previousMilestone = Double.parseDouble(cols.get(2))
-			val enabledRooms = Arrays.stream(cols.get(3).split("&")).map[Long.parseLong(it)].collect(Collectors.toList())
-			return new Alert => [ alert |
-				alert.symbol = symbol
-				alert.difference = diff
-				alert.previousMilestone = previousMilestone
-				alert.enabledRooms = enabledRooms
-			]
-		].collect(Collectors.toList())
+		if(file.exists) {
+			alerts.clear()
+			alerts += Files.lines(file.toPath).map [
+				try {
+				val cols = split(",")
+				val symbol = cols.get(0)
+				val diff = Double.parseDouble(cols.get(1))
+				val previousMilestone = Double.parseDouble(cols.get(2))
+				val enabledRooms = Arrays.stream(cols.get(3).split("&")).map[Long.parseLong(it)].collect(Collectors.toList())
+				return new Alert => [ alert |
+					alert.symbol = symbol
+					alert.difference = diff
+					alert.previousMilestone = previousMilestone
+					alert.enabledRooms = enabledRooms
+				]
+				} catch(Exception e) {
+					e.printStackTrace()
+					return null
+				}
+			].filter[it !== null].collect(Collectors.toList())
+		}
 	}
 
 	def getTargets(Alert alert) {
