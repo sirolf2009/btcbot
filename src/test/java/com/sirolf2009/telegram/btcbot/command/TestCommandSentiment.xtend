@@ -6,7 +6,8 @@ class TestCommandSentiment {
 	
 	@Test
 	def void test() {
-		println(CommandSentiment.getSentimentForSymbol("BTC/USD"))
+		println(CommandSentiment.getInvestingSentimentForSymbol("BTC/USD"))
+		println(CommandSentiment.getBfxDataSentimentForSymbol("BTC/USD"))
 	}
 	
 }
