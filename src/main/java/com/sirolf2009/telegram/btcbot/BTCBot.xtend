@@ -7,23 +7,13 @@ import org.telegram.telegrambots.exceptions.TelegramApiException
 
 class BTCBot extends TelegramLongPollingBot {
 	
-	extension val Database db
-	extension val Alerts alerts
-	extension val Commands commands
+	extension var Commands commands
 	
 	new() {
-		db = new Database("http://localhost:8086")
-		alerts = new Alerts(db, [
-			val newPrice = key
-			val alert = value
-			println("Alert "+alert+" triggered at price "+newPrice)
-			alert.enabledRooms.forEach[
-				send('''Alert triggered for «alert.symbol». Price was «alert.previousMilestone», now «newPrice»''')
-			]
-		])
-		commands = new Commands(db, alerts)
-		
-		new Thread(alerts).start()
+	}
+	
+	def setupCommands() {
+		commands = new Commands(this)
 	}
 
 	override getBotToken() {
@@ -39,7 +29,6 @@ class BTCBot extends TelegramLongPollingBot {
 	}
 	
 	def void send(Update update, String msg) {
-		println(update.message.text+" -> "+msg)
 		send(update.message.chatId, msg)
 	}
 	

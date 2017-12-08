@@ -1,35 +1,25 @@
 package com.sirolf2009.telegram.btcbot
 
 import com.sirolf2009.telegram.btcbot.command.Command
-import com.sirolf2009.telegram.btcbot.command.CommandAlerts
 import com.sirolf2009.telegram.btcbot.command.CommandJoke
-import com.sirolf2009.telegram.btcbot.command.CommandPairs
+import com.sirolf2009.telegram.btcbot.command.CommandRSS
 import com.sirolf2009.telegram.btcbot.command.CommandSentiment
-import com.sirolf2009.telegram.btcbot.command.CommandTicker
 import java.util.List
 import java.util.Optional
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.telegram.telegrambots.api.objects.Update
-import com.sirolf2009.telegram.btcbot.command.CommandArbritrage
 
 @Accessors
 class Commands {
 
-	extension val Database database
-	extension val Alerts alerts
 	val enabledAlerts = newArrayList()
 	val List<Command> commands
 
-	new(Database database, Alerts alerts) {
-		this.database = database
-		this.alerts = alerts
+	new(BTCBot bot) {
 		commands = #[
-			new CommandAlerts(alerts),
 			new CommandJoke(),
-			new CommandPairs(database),
 			new CommandSentiment(),
-			new CommandTicker(database),
-			new CommandArbritrage(database)
+			new CommandRSS(bot)
 		]
 	}
 

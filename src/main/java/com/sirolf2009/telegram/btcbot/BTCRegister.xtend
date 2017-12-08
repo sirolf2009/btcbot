@@ -8,7 +8,9 @@ class BTCRegister {
 	def static void main(String[] args) {
 		ApiContextInitializer.init()
 		val api = new TelegramBotsApi()
-		api.registerBot(new BTCBot());
+		val bot = new BTCBot()
+		bot.setupCommands()
+		api.registerBot(bot)
 	}
 	
 }
