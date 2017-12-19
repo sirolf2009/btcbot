@@ -1,20 +1,21 @@
 package com.sirolf2009.telegram.btcbot.command
 
+import com.sirolf2009.telegram.btcbot.ATHFollower
 import com.sirolf2009.telegram.btcbot.BTCBot
-import com.sirolf2009.telegram.btcbot.RSSFollower
+import java.io.File
 import java.io.FileWriter
 import java.io.PrintWriter
 import java.nio.file.Files
-import java.nio.file.Paths
 import java.util.HashMap
 import java.util.Map
 
-class CommandRSS extends Command {
+class CommandATH extends Command {
 
-	static val Map<Long, RSSFollower> followers = new HashMap()
+	static val Map<Long, ATHFollower> followers = new HashMap()
+	static val followersFile = new File("ath-follower")
 
 	new(BTCBot bot) {
-		super("rss", "<enable|disable|status|dump>", "RSS feed") [
+		super("ath", "<enable|disable|status|dump|current>", "ATH feed") [
 			val chatID = it.message.chatId
 			val params = message.text.split(" ")
 			if(params.size == 2) {
@@ -40,7 +41,13 @@ class CommandRSS extends Command {
 					}
 				} else if(params.get(1).equals("dump")) {
 					if(chatID.registered()) {
-						return followers.get(chatID).uris.join("\n")
+						return followers.get(chatID).ath.get()+""
+					} else {
+						return "This chat is not registered"
+					}
+				} else if(params.get(1).equals("current")) {
+					if(chatID.registered()) {
+						return followers.get(chatID).current.get()+""
 					} else {
 						return "This chat is not registered"
 					}
@@ -48,7 +55,7 @@ class CommandRSS extends Command {
 					return "Illegal argument"
 				}
 			} else {
-				return "Usage: rss <enable|disable|status|dump>"
+				return "Usage: ath <enable|disable|status|dump>"
 			}
 		]
 		savedIDs.forEach [
@@ -61,7 +68,7 @@ class CommandRSS extends Command {
 	}
 
 	def static register(BTCBot bot, Long chatID) {
-		val follower = new RSSFollower(bot, chatID)
+		val follower = new ATHFollower(bot, chatID)
 		new Thread(follower).start()
 		followers.put(chatID, follower)
 		save()
@@ -74,7 +81,8 @@ class CommandRSS extends Command {
 	}
 
 	def static getSavedIDs() {
-		Files.readAllLines(Paths.get("rss")).map [
+		followersFile.createNewFile
+		Files.readAllLines(followersFile.toPath).map [
 			try {
 				return Long.parseLong(it)
 			} catch(Exception e) {
@@ -86,9 +94,9 @@ class CommandRSS extends Command {
 	}
 
 	def static save() {
-		val writer = new PrintWriter(new FileWriter("rss"))
+		followersFile.createNewFile
+		val writer = new PrintWriter(new FileWriter(followersFile))
 		writer.println(followers.keySet.map[toString].join("\n"))
 		writer.close()
 	}
-
 }

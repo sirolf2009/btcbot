@@ -8,6 +8,7 @@ import java.util.List
 import java.util.Optional
 import org.eclipse.xtend.lib.annotations.Accessors
 import org.telegram.telegrambots.api.objects.Update
+import com.sirolf2009.telegram.btcbot.command.CommandATH
 
 @Accessors
 class Commands {
@@ -19,7 +20,8 @@ class Commands {
 		commands = #[
 			new CommandJoke(),
 			new CommandSentiment(),
-			new CommandRSS(bot)
+			new CommandRSS(bot),
+			new CommandATH(bot)
 		]
 	}
 

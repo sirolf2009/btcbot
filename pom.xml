@@ -102,5 +102,10 @@
 			<artifactId>rome</artifactId>
 			<version>1.9.0</version>
 		</dependency>
+		<dependency>
+			<groupId>com.sirolf2009</groupId>
+			<artifactId>bitfinex-wss</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 	</dependencies>
 </project>
