@@ -1,5 +1,7 @@
 package com.sirolf2009.telegram.btcbot
 
+import java.util.ArrayList
+import java.util.function.Consumer
 import org.telegram.telegrambots.api.methods.send.SendMessage
 import org.telegram.telegrambots.api.objects.Update
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
@@ -7,13 +9,16 @@ import org.telegram.telegrambots.exceptions.TelegramApiException
 
 class BTCBot extends TelegramLongPollingBot {
 	
-	extension var Commands commands
+	val listeners = new ArrayList<Consumer<Update>>()
 	
 	new() {
 	}
 	
 	def setupCommands() {
-		commands = new Commands(this)
+	}
+	
+	def addListener(Consumer<Update> consumer) {
+		listeners.add(consumer)
 	}
 
 	override getBotToken() {
@@ -25,7 +30,7 @@ class BTCBot extends TelegramLongPollingBot {
 	}
 
 	override onUpdateReceived(Update update) {
-		commands.onMessageReceived(update).ifPresent[update.send(it)]
+		listeners.parallelStream.forEach[accept(update)]
 	}
 	
 	def void send(Update update, String msg) {
